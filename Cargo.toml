@@ -5,7 +5,9 @@ authors = ["Kia Strawberries"]
 license = "MIT OR Apache-2.0"
 version = "0.0.0"
 edition = "2021"
+readme = "README.md"
 keywords = ["genshin", "impact", "tcg"]
+repository = "https://github.com/uwukia/genius-invokation"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
