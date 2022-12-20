@@ -1,0 +1,12 @@
+[package]
+name = "genius-invokation"
+description = "Abstractions and structures for Genius Invokation TCG"
+authors = ["Kia Strawberries"]
+license = "MIT OR Apache-2.0"
+version = "0.0.0"
+edition = "2021"
+keywords = ["genshin", "impact", "tcg"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
