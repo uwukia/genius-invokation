@@ -7,5 +7,5 @@ mod die;
 pub use element::Element;
 mod element;
 
-pub use deck::Deck;
+pub use deck::{Deck, DeckError};
 mod deck;

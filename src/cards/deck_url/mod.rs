@@ -1,9 +1,3 @@
-/// # Retrieving a Deck from a URL
-/// 
-/// Example:
-/// 
-/// https://genshin.hotgames.gg/tcg/deck-builder?deck=1.6.MC.MD.MF.MG.MH.MI.MJ.MK.ML.MM.MN.MO.MP.MV.MY.e.g8.gB.gD.gF.gb.ge.gh.gk.gt.gv.gx.gz.wj.wl.wm&ver=1&lang=en&author=DefaultDeck
-
 use std::{fmt, iter};
 use crate::*;
 
@@ -16,6 +10,21 @@ pub enum UrlDeckError<'s> {
     UnknownCard(&'s str),
 }
 
+/// Creates a `Card` iterator from a [deck builder url] (if valid)
+/// 
+/// ## Example
+/// 
+/// ```
+/// use genius_invokation::{Deck, CharacterCard::*, deck_from_url};
+/// 
+/// let url = "https://genshin.hotgames.gg/tcg/deck-builder?deck=1.6.MC.MD.MF.MG.MH.MI.MJ.MK.ML.MM.MN.MO.MP.MV.MY.e.g8.gB.gD.gF.gb.ge.gh.gk.gt.gv.gx.gz.wj.wl.wm&ver=1&lang=en&author=DefaultDeck";
+/// let iterator = deck_from_url(url).unwrap();
+/// let deck = Deck::from_iter(iterator).unwrap();
+/// 
+/// assert_eq!(deck.characters(), &[Kaeya, Sucrose, Diluc]);
+/// ```
+/// 
+/// [deck builder url]: https://genshin.hotgames.gg/tcg/deck-builder
 pub fn deck_from_url<'s>(url: &'s str) -> Result<impl Iterator<Item=Card> + 's, UrlDeckError<'s>> {
     let index = url.find(URL_STARTER).ok_or_else(|| UrlDeckError::InvalidUrl(url))?;
     let start = index + URL_STARTER.len();
