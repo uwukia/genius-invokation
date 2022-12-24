@@ -6,3 +6,6 @@ mod die;
 
 pub use element::Element;
 mod element;
+
+pub use deck::Deck;
+mod deck;

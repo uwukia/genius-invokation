@@ -5,6 +5,4 @@ pub enum WeaponType {
     Claymore,
     Polearm,
     Sword,
-    OtherWeapons,
-    None,
 }

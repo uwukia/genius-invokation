@@ -50,43 +50,52 @@ impl CharacterCard {
         self.info_dump().1
     }
 
-    pub fn weapon(&self) -> WeaponType {
+    /// The weapon type this character can hold
+    /// 
+    /// Returns `None` for characters listed as "Other Weapon"
+    pub fn weapon(&self) -> Option<WeaponType> {
         self.info_dump().2
     }
 
     pub fn faction(&self) -> Faction {
-        self.info_dump().3
+        self.info_dump().3  
     }
 
-    fn info_dump(&self) -> (&'static str, Element, WeaponType, Faction) {
+    fn info_dump(&self) -> (&'static str, Element, Option<WeaponType>, Faction) {
         match self {
-            Self::KamisatoAyaka => ("Kamisato Ayaka", Cryo,    Sword,    Inazuma),
-            Self::Chongyun =>      ("Chongyun",       Cryo,    Claymore, Liyue),
-            Self::Diona =>         ("Diona",          Cryo,    Bow,      Mondstadt),
-            Self::Ganyu =>         ("Ganyu",          Cryo,    Bow,      Liyue),
-            Self::Kaeya =>         ("Kaeya",          Cryo,    Sword,    Mondstadt),
-            Self::Barbara =>       ("Barbara",        Hydro,   Catalyst, Mondstadt),
-            Self::Mona =>          ("Mona",           Hydro,   Catalyst, Mondstadt),
-            Self::Xingqiu =>       ("Xingqiu",        Hydro,   Sword,    Liyue),
-            Self::Cyno =>          ("Cyno",           Electro, Polearm,  Sumeru),
-            Self::Fischl =>        ("Fischl",         Electro, Bow,      Mondstadt),
-            Self::Keqing =>        ("Keqing",         Electro, Sword,    Liyue),
-            Self::Razor =>         ("Razor",          Electro, Claymore, Mondstadt),
-            Self::Ningguang =>     ("Ningguang",      Geo,     Catalyst, Liyue),
-            Self::Noelle =>        ("Noelle",         Geo,     Claymore, Mondstadt),
-            Self::Collei =>        ("Collei",         Dendro,  Bow,      Sumeru),
-            Self::Jean =>          ("Jean",           Anemo,   Sword,    Mondstadt),
-            Self::Sucrose =>       ("Sucrose",        Anemo,   Catalyst, Mondstadt),
-            Self::Bennett =>       ("Bennett",        Pyro,    Sword,    Mondstadt),
-            Self::Diluc =>         ("Diluc",          Pyro,    Claymore, Mondstadt),
-            Self::Xiangling =>     ("Xiangling",      Pyro,    Polearm,  Liyue),
-            Self::Yoimiya =>       ("Yoimiya",        Pyro,    Bow,      Inazuma),
-            Self::MirrorMaiden =>          ("Mirror Maiden",          Hydro,  OtherWeapons, Fatui),
-            Self::RhodeiaOfLoch =>         ("Rhodeia of Loch",        Hydro,  OtherWeapons, Monster),
+            Self::KamisatoAyaka => ("Kamisato Ayaka", Cryo,    Some(Sword),    Inazuma),
+            Self::Chongyun =>      ("Chongyun",       Cryo,    Some(Claymore), Liyue),
+            Self::Diona =>         ("Diona",          Cryo,    Some(Bow),      Mondstadt),
+            Self::Ganyu =>         ("Ganyu",          Cryo,    Some(Bow),      Liyue),
+            Self::Kaeya =>         ("Kaeya",          Cryo,    Some(Sword),    Mondstadt),
+            Self::Barbara =>       ("Barbara",        Hydro,   Some(Catalyst), Mondstadt),
+            Self::Mona =>          ("Mona",           Hydro,   Some(Catalyst), Mondstadt),
+            Self::Xingqiu =>       ("Xingqiu",        Hydro,   Some(Sword),    Liyue),
+            Self::Cyno =>          ("Cyno",           Electro, Some(Polearm),  Sumeru),
+            Self::Fischl =>        ("Fischl",         Electro, Some(Bow),      Mondstadt),
+            Self::Keqing =>        ("Keqing",         Electro, Some(Sword),    Liyue),
+            Self::Razor =>         ("Razor",          Electro, Some(Claymore), Mondstadt),
+            Self::Ningguang =>     ("Ningguang",      Geo,     Some(Catalyst), Liyue),
+            Self::Noelle =>        ("Noelle",         Geo,     Some(Claymore), Mondstadt),
+            Self::Collei =>        ("Collei",         Dendro,  Some(Bow),      Sumeru),
+            Self::Jean =>          ("Jean",           Anemo,   Some(Sword),    Mondstadt),
+            Self::Sucrose =>       ("Sucrose",        Anemo,   Some(Catalyst), Mondstadt),
+            Self::Bennett =>       ("Bennett",        Pyro,    Some(Sword),    Mondstadt),
+            Self::Diluc =>         ("Diluc",          Pyro,    Some(Claymore), Mondstadt),
+            Self::Xiangling =>     ("Xiangling",      Pyro,    Some(Polearm),  Liyue),
+            Self::Yoimiya =>       ("Yoimiya",        Pyro,    Some(Bow),      Inazuma),
+            Self::MirrorMaiden =>          ("Mirror Maiden",          Hydro,  None, Fatui),
+            Self::RhodeiaOfLoch =>         ("Rhodeia of Loch",        Hydro,  None, Monster),
             Self::StonehideLawachurl =>    ("Stonehide Lawachurl",    Geo,    None,         Monster),
             Self::JadeplumeTerrorshroom => ("Jadeplume Terrorshroom", Dendro, None,         Monster),
-            Self::MaguuKenki =>            ("Maguu Kenki",            Anemo,  OtherWeapons, Monster),
-            Self::FatuiPyroAgent =>        ("Fatui Pyro Agent",       Pyro,   OtherWeapons, Fatui),
+            Self::MaguuKenki =>            ("Maguu Kenki",            Anemo,  None, Monster),
+            Self::FatuiPyroAgent =>        ("Fatui Pyro Agent",       Pyro,   None, Fatui),
         }
+    }
+}
+
+impl super::CardOrd for CharacterCard {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        (*self as u32).cmp(&(*other as u32))
     }
 }
