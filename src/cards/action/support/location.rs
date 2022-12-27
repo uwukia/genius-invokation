@@ -1,4 +1,4 @@
-use crate::{CardCost, DiceCost::Same};
+use crate::CardCost;
 
 use super::Price;
 
@@ -13,27 +13,33 @@ pub enum LocationCard {
     WangshuInn,
 }
 
-impl LocationCard {
-    pub fn name(&self) -> &'static str {
+impl super::PlayingCard for LocationCard {
+    fn name(&self) -> &'static str {
         self.info_dump().0
     }
 
-    pub fn shop_price(&self) -> Price {
+    fn shop_price(&self) -> Option<Price> {
+        Some(700)
+    }
+
+    fn cost(&self) -> CardCost {
         self.info_dump().1
     }
 
-    pub fn cost(&self) -> CardCost {
-        self.info_dump().2
+    fn location(&self) -> Option<LocationCard> {
+        Some(*self)
     }
+}
 
-    fn info_dump(&self) -> (&'static str, Price, CardCost) {
+impl LocationCard {
+    fn info_dump(&self) -> (&'static str, CardCost) {
         match self {
-            Self::DawnWinery =>               ("Dawn Winery",                 700, CardCost::new(Same, 2, 0)),
-            Self::FavoniusCathedral =>        ("Favonius Cathedral",          700, CardCost::new(Same, 2, 0)),
-            Self::KnightsOfFavoniusLibrary => ("Knights of Favonius Library", 700, CardCost::new(Same, 1, 0)),
-            Self::JadeChamber =>              ("Jade Chamber",                700, CardCost::new(Same, 1, 0)),
-            Self::LiyueHarborWharf =>         ("Liyue Harbor Wharf",          700, CardCost::new(Same, 2, 0)),
-            Self::WangshuInn =>               ("Wangshu Inn",                 700, CardCost::new(Same, 2, 0)),
+            Self::DawnWinery =>               ("Dawn Winery",                 CardCost::MATCH2),
+            Self::FavoniusCathedral =>        ("Favonius Cathedral",          CardCost::MATCH2),
+            Self::KnightsOfFavoniusLibrary => ("Knights of Favonius Library", CardCost::ONE),
+            Self::JadeChamber =>              ("Jade Chamber",                CardCost::ONE),
+            Self::LiyueHarborWharf =>         ("Liyue Harbor Wharf",          CardCost::MATCH2),
+            Self::WangshuInn =>               ("Wangshu Inn",                 CardCost::MATCH2),
         }
     }
 }
@@ -43,3 +49,5 @@ impl super::CardOrd for LocationCard {
         (*self as u32).cmp(&(*other as u32))
     }
 }
+
+impl_from!(Location: LocationCard => crate::SupportCard => crate::ActionCard => crate::Card);

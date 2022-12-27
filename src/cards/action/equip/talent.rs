@@ -32,18 +32,26 @@ pub enum TalentCard {
     PaidInFull,
 }
 
-impl TalentCard {
-    pub fn name(&self) -> &'static str {
+impl super::PlayingCard for TalentCard {
+    fn name(&self) -> &'static str {
         self.info_dump().0
     }
 
-    pub fn cost(&self) -> CardCost {
+    fn shop_price(&self) -> Option<super::Price> {
+        None
+    }
+
+    fn cost(&self) -> CardCost {
         self.info_dump().1
     }
 
-    /// Returns which character this card is attached to
-    /// 
-    /// A talent card can only be present in a deck when its attached character is also present
+    fn talent(&self) -> Option<TalentCard> {
+        Some(*self)
+    }
+}
+
+impl TalentCard {
+    /// Retrieves the character card this talent is attached to
     pub fn character(&self) -> CharacterCard {
         self.info_dump().2
     }
@@ -86,3 +94,5 @@ impl super::CardOrd for TalentCard {
         (*self as u32).cmp(&(*other as u32))
     }
 }
+
+impl_from!(Talent: TalentCard => crate::EquipmentCard => crate::ActionCard => crate::Card);

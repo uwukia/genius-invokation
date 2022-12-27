@@ -18,7 +18,22 @@ pub enum DiceCost {
 }
 
 impl CardCost {
-    pub(crate) fn new(dice: DiceCost, amount: u8, energy: u8) -> Self {
+    /// For cards that cost nothing
+    pub(crate) const ZERO: Self = Self { dice: DiceCost::Same, amount: 0, energy: 0 };
+
+    /// For cards that cost one die of any element
+    pub(crate) const ONE: Self = Self { dice: DiceCost::Same, amount: 1, energy: 0 };
+
+    /// For cards that cost any two dice of any type
+    pub(crate) const ANY2: Self = Self { dice: DiceCost::Any, amount: 2, energy: 0 };
+
+    /// For cards that cost two dice of the same type
+    pub(crate) const MATCH2: Self = Self { dice: DiceCost::Same, amount: 2, energy: 0 };
+
+    /// For cards that cost three dice of the same type
+    pub(crate) const MATCH3: Self = Self { dice: DiceCost::Same, amount: 3, energy: 0 };
+
+    pub(crate) const fn new(dice: DiceCost, amount: u8, energy: u8) -> Self {
         Self { dice, amount, energy }
     }
 

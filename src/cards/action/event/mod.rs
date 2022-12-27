@@ -9,7 +9,7 @@ mod resonance;
 pub use food::FoodCard;
 mod food;
 
-use super::Price;
+use super::{Price, PlayingCard};
 
 #[derive(Debug, Hash, Clone, Copy, PartialEq, Eq)]
 pub enum EventCard {
@@ -21,8 +21,8 @@ pub enum EventCard {
     Food(FoodCard),
 }
 
-impl EventCard {
-    pub fn name(&self) -> &'static str {
+impl PlayingCard for EventCard {
+    fn name(&self) -> &'static str {
         match self {
             Self::Normal(card)    => card.name(),
             Self::Resonance(card) => card.name(),
@@ -30,26 +30,31 @@ impl EventCard {
         }
     }
 
-    /// Returns `Some(price)` in Lucky Coins to buy the given card in the shop.
-    /// 
-    /// Cards not sold in the shop (such as [`TossUp`]) return `None`
-    /// 
-    /// [`TossUp`]: NormalEventCard::TossUp
-    pub fn shop_price(&self) -> Option<Price> {
+    fn shop_price(&self) -> Option<Price> {
         match self {
             Self::Normal(card)    => card.shop_price(),
-            Self::Resonance(card) => Some(card.shop_price()),
+            Self::Resonance(card) => card.shop_price(),
             Self::Food(card)      => card.shop_price(),
         }
     }
 
-    pub fn cost(&self) -> CardCost {
+    fn cost(&self) -> CardCost {
         match self {
             Self::Normal(card)    => card.cost(),
             Self::Resonance(card) => card.cost(),
             Self::Food(card)      => card.cost(),
         }
     }
+
+    fn event(&self) -> Option<EventCard> {
+        Some(*self)
+    }
+
+    impl_match_method!(
+        normal_event -> NormalEventCard { card: Self::Normal(card) },
+        resonance    -> ElementalResonanceCard { card: Self::Resonance(card) },
+        food         -> FoodCard { card: Self::Food(card) },
+    );
 }
 
 use std::cmp::Ordering;
@@ -68,3 +73,5 @@ impl CardOrd for EventCard {
         }
     }
 }
+
+impl_from!(Event: EventCard => crate::ActionCard => crate::Card);

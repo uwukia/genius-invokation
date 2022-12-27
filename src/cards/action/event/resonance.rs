@@ -1,4 +1,4 @@
-use crate::{CardCost, DiceCost::{Same, Exact}, Element::*};
+use crate::{CardCost, DiceCost::Exact, Element::{self, *}};
 
 use super::Price;
 
@@ -22,34 +22,47 @@ pub enum ElementalResonanceCard {
 }
 
 impl ElementalResonanceCard {
-    pub fn name(&self) -> &'static str {
+    /// Returns which element this resonance card is attached to
+    pub fn element(&self) -> Element {
+        self.info_dump().1
+    }
+}
+
+impl super::PlayingCard for ElementalResonanceCard {
+    fn name(&self) -> &'static str {
         self.info_dump().0
     }
 
-    pub fn shop_price(&self) -> Price {
-        self.info_dump().1
+    fn shop_price(&self) -> Option<Price> {
+        Some(500)
     }
 
-    pub fn cost(&self) -> CardCost {
+    fn cost(&self) -> CardCost {
         self.info_dump().2
     }
 
-    fn info_dump(&self) -> (&'static str, Price, CardCost) {
+    fn resonance(&self) -> Option<ElementalResonanceCard> {
+        Some(*self)
+    }
+}
+
+impl ElementalResonanceCard {
+    fn info_dump(&self) -> (&'static str, Element, CardCost) {
         match self {
-            Self::WovenIce =>          ("Woven Ice",          500, CardCost::new(Same,           0, 0)),
-            Self::ShatteringIce =>     ("Shattering Ice",     500, CardCost::new(Exact(Cryo),    1, 0)),
-            Self::WovenWaters =>       ("Woven Waters",       500, CardCost::new(Same,           0, 0)),
-            Self::SoothingWater =>     ("Soothing Water",     500, CardCost::new(Exact(Hydro),   1, 0)),
-            Self::WovenFlames =>       ("Woven Flames",       500, CardCost::new(Same,           0, 0)),
-            Self::FerventFlames =>     ("Fervent Flames",     500, CardCost::new(Exact(Pyro),    1, 0)),
-            Self::WovenThunder =>      ("Woven Thunder",      500, CardCost::new(Same,           0, 0)),
-            Self::HighVoltage =>       ("High Voltage",       500, CardCost::new(Exact(Electro), 1, 0)),
-            Self::WovenWinds =>        ("Woven Winds",        500, CardCost::new(Same,           0, 0)),
-            Self::ImpetuousWinds =>    ("Impetuous Winds",    500, CardCost::new(Exact(Anemo),   1, 0)),
-            Self::WovenStone =>        ("Woven Stone",        500, CardCost::new(Same,           0, 0)),
-            Self::EnduringRock =>      ("Enduring Rock",      500, CardCost::new(Exact(Geo),     1, 0)),
-            Self::WovenWeeds =>        ("Woven Weeds",        500, CardCost::new(Same,           0, 0)),
-            Self::SprawlingGreenery => ("Sprawling Greenery", 500, CardCost::new(Exact(Dendro),  1, 0)),
+            Self::WovenIce =>          ("Woven Ice",          Cryo,    CardCost::ZERO),
+            Self::ShatteringIce =>     ("Shattering Ice",     Cryo,    CardCost::new(Exact(Cryo),    1, 0)),
+            Self::WovenWaters =>       ("Woven Waters",       Hydro,   CardCost::ZERO),
+            Self::SoothingWater =>     ("Soothing Water",     Hydro,   CardCost::new(Exact(Hydro),   1, 0)),
+            Self::WovenFlames =>       ("Woven Flames",       Pyro,    CardCost::ZERO),
+            Self::FerventFlames =>     ("Fervent Flames",     Pyro,    CardCost::new(Exact(Pyro),    1, 0)),
+            Self::WovenThunder =>      ("Woven Thunder",      Electro, CardCost::ZERO),
+            Self::HighVoltage =>       ("High Voltage",       Electro, CardCost::new(Exact(Electro), 1, 0)),
+            Self::WovenWinds =>        ("Woven Winds",        Anemo,   CardCost::ZERO),
+            Self::ImpetuousWinds =>    ("Impetuous Winds",    Anemo,   CardCost::new(Exact(Anemo),   1, 0)),
+            Self::WovenStone =>        ("Woven Stone",        Geo,     CardCost::ZERO),
+            Self::EnduringRock =>      ("Enduring Rock",      Geo,     CardCost::new(Exact(Geo),     1, 0)),
+            Self::WovenWeeds =>        ("Woven Weeds",        Dendro,  CardCost::ZERO),
+            Self::SprawlingGreenery => ("Sprawling Greenery", Dendro,  CardCost::new(Exact(Dendro),  1, 0)),
         }
     }
 }
@@ -59,3 +72,5 @@ impl super::CardOrd for ElementalResonanceCard {
         (*self as u32).cmp(&(*other as u32))
     }
 }
+
+impl_from!(Resonance: ElementalResonanceCard => crate::EventCard => crate::ActionCard => crate::Card);

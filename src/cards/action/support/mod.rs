@@ -9,7 +9,7 @@ mod location;
 pub use item::ItemCard;
 mod item;
 
-use super::Price;
+use super::{Price, PlayingCard};
 
 #[derive(Debug, Hash, Clone, Copy, PartialEq, Eq)]
 pub enum SupportCard {
@@ -18,8 +18,8 @@ pub enum SupportCard {
     Item(ItemCard),
 }
 
-impl SupportCard {
-    pub fn name(&self) -> &'static str {
+impl PlayingCard for SupportCard {
+    fn name(&self) -> &'static str {
         match self {
             Self::Companion(card) => card.name(),
             Self::Location(card)  => card.name(),
@@ -27,26 +27,31 @@ impl SupportCard {
         }
     }
 
-    /// Returns `Some(price)` in Lucky Coins to buy the given card in the shop.
-    /// 
-    /// Cards not sold in the shop (such as [`Paimon`]) return `None`
-    /// 
-    /// [`Paimon`]: CompanionCard::Paimon
-    pub fn shop_price(&self) -> Option<Price> {
+    fn shop_price(&self) -> Option<Price> {
         match self {
             Self::Companion(card) => card.shop_price(),
-            Self::Location(card)  => Some(card.shop_price()),
-            Self::Item(card)      => Some(card.shop_price()),
+            Self::Location(card)  => card.shop_price(),
+            Self::Item(card)      => card.shop_price(),
         }
     }
 
-    pub fn cost(&self) -> CardCost {
+    fn cost(&self) -> CardCost {
         match self {
             Self::Companion(card) => card.cost(),
             Self::Location(card)  => card.cost(),
             Self::Item(card)      => card.cost(),
         }
     }
+
+    fn support(&self) -> Option<SupportCard> {
+        Some(*self)
+    }
+
+    impl_match_method!(
+        companion -> CompanionCard { card: Self::Companion(card) },
+        location  -> LocationCard { card: Self::Location(card) },
+        item -> ItemCard { card: Self::Item(card) },
+    );
 }
 
 use std::cmp::Ordering;
@@ -65,3 +70,5 @@ impl CardOrd for SupportCard {
         }
     }
 }
+
+impl_from!(Support: SupportCard => crate::ActionCard => crate::Card);

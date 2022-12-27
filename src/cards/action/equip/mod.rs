@@ -8,7 +8,7 @@ pub use talent::TalentCard;
 mod talent;
 
 use crate::CardCost;
-use super::Price;
+use super::{Price, PlayingCard};
 
 #[derive(Debug, Hash, Clone, Copy, PartialEq, Eq)]
 pub enum EquipmentCard {
@@ -17,8 +17,8 @@ pub enum EquipmentCard {
     Artifact(ArtifactCard),
 }
 
-impl EquipmentCard {
-    pub fn name(&self) -> &'static str {
+impl PlayingCard for EquipmentCard {
+    fn name(&self) -> &'static str {
         match self {
             Self::Talent(card)   => card.name(),
             Self::Weapon(card)   => card.name(),
@@ -26,26 +26,31 @@ impl EquipmentCard {
         }
     }
 
-    /// Returns `Some(price)` in Lucky Coins to buy the given card in the shop.
-    /// 
-    /// Cards not sold in the shop (such as [talent] cards) return `None`
-    /// 
-    /// [talent]: TalentCard
-    pub fn shop_price(&self) -> Option<Price> {
+    fn shop_price(&self) -> Option<Price> {
         match self {
             Self::Talent(_)      => None,
-            Self::Weapon(card)   => Some(card.shop_price()),
-            Self::Artifact(card) => Some(card.shop_price()),
+            Self::Weapon(card)   => card.shop_price(),
+            Self::Artifact(card) => card.shop_price(),
         }
     }
 
-    pub fn cost(&self) -> CardCost {
+    fn cost(&self) -> CardCost {
         match self {
             Self::Talent(card)   => card.cost(),
             Self::Weapon(card)   => card.cost(),
             Self::Artifact(card) => card.cost(),
         }
     }
+
+    fn equipment(&self) -> Option<EquipmentCard> {
+        Some(*self)
+    }
+
+    impl_match_method!(
+        artifact -> ArtifactCard { card: Self::Artifact(card) },
+        talent   -> TalentCard { card: Self::Talent(card) },
+        weapon   -> WeaponCard { card: Self::Weapon(card) },
+    );
 }
 
 use std::cmp::Ordering;
@@ -64,3 +69,5 @@ impl CardOrd for EquipmentCard {
         }
     }
 }
+
+impl_from!(Equipment: EquipmentCard => crate::ActionCard => crate::Card);

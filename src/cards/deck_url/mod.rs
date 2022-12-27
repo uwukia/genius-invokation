@@ -4,6 +4,7 @@ use crate::*;
 const URL_STARTER: &'static str = "genshin.hotgames.gg/tcg/deck-builder?deck=";
 
 #[derive(Debug)]
+#[cfg_attr(docsrs, doc(cfg(feature = "deck-url")))]
 pub enum UrlDeckError<'s> {
     InvalidUrl(&'s str),
     UnknownVersion(&'s str),
@@ -25,6 +26,7 @@ pub enum UrlDeckError<'s> {
 /// ```
 /// 
 /// [deck builder url]: https://genshin.hotgames.gg/tcg/deck-builder
+#[cfg_attr(docsrs, doc(cfg(feature = "deck-url")))]
 pub fn deck_from_url<'s>(url: &'s str) -> Result<impl Iterator<Item=Card> + 's, UrlDeckError<'s>> {
     let index = url.find(URL_STARTER).ok_or_else(|| UrlDeckError::InvalidUrl(url))?;
     let start = index + URL_STARTER.len();

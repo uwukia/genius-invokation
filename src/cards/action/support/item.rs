@@ -1,4 +1,4 @@
-use crate::{CardCost, DiceCost::Any};
+use crate::CardCost;
 
 use super::Price;
 
@@ -9,23 +9,29 @@ pub enum ItemCard {
     NRE,
 }
 
-impl ItemCard {
-    pub fn name(&self) -> &'static str {
+impl super::PlayingCard for ItemCard {
+    fn name(&self) -> &'static str {
         self.info_dump().0
     }
 
-    pub fn shop_price(&self) -> Price {
-        self.info_dump().1
+    fn shop_price(&self) -> Option<Price> {
+        Some(self.info_dump().1)
     }
 
-    pub fn cost(&self) -> CardCost {
+    fn cost(&self) -> CardCost {
         self.info_dump().2
     }
 
+    fn item(&self) -> Option<ItemCard> {
+        Some(*self)
+    }
+}
+
+impl ItemCard {
     fn info_dump(&self) -> (&'static str, Price, CardCost) {
         match self {
-            Self::ParametricTransformer => ("Parametric Transformer", 700, CardCost::new(Any, 2, 0)),
-            Self::NRE =>                   ("NRE",                    700, CardCost::new(Any, 2, 0)),
+            Self::ParametricTransformer => ("Parametric Transformer", 700, CardCost::ANY2),
+            Self::NRE =>                   ("NRE",                    700, CardCost::ANY2),
         }
     }
 }
@@ -35,3 +41,5 @@ impl super::CardOrd for ItemCard {
         (*self as u32).cmp(&(*other as u32))
     }
 }
+
+impl_from!(Item: ItemCard => crate::SupportCard => crate::ActionCard => crate::Card);

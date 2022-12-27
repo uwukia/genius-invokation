@@ -1,7 +1,8 @@
 use crate::Element;
 
+/// An elemental octet die 
 #[derive(Debug, Hash, Clone, Copy, PartialEq, Eq)]
 pub enum Die {
-    Onmi,
+    Omni,
     Element(Element)
 }

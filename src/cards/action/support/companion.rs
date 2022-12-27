@@ -1,4 +1,4 @@
-use crate::{CardCost, DiceCost::{Same, Any}};
+use crate::CardCost;
 
 use super::Price;
 
@@ -19,33 +19,39 @@ pub enum CompanionCard {
     IronTongueTian,
 }
 
-impl CompanionCard {
-    pub fn name(&self) -> &'static str {
+impl super::PlayingCard for CompanionCard {
+    fn name(&self) -> &'static str {
         self.info_dump().0
     }
 
-    pub fn shop_price(&self) -> Option<Price> {
+    fn shop_price(&self) -> Option<Price> {
         self.info_dump().1
     }
 
-    pub fn cost(&self) -> CardCost {
+    fn cost(&self) -> CardCost {
         self.info_dump().2
     }
 
+    fn companion(&self) -> Option<CompanionCard> {
+        Some(*self)
+    }
+}
+
+impl CompanionCard {
     fn info_dump(&self) -> (&'static str, Option<Price>, CardCost) {
         match self {
-            Self::Paimon =>    ("Paimon",    None,      CardCost::new(Same, 3, 0)),
-            Self::Katheryne => ("Katheryne", Some(700), CardCost::new(Any,  2, 0)),
-            Self::Timaeus =>   ("Timaeus",   Some(700), CardCost::new(Same, 2, 0)),
-            Self::Wagner =>    ("Wagner",    Some(700), CardCost::new(Same, 2, 0)),
-            Self::ChefMao =>   ("ChefMao",   Some(700), CardCost::new(Same, 1, 0)),
-            Self::Tubby =>     ("Tubby",     Some(700), CardCost::new(Same, 2, 0)),
-            Self::Timmie =>    ("Timmie",    Some(700), CardCost::new(Same, 0, 0)),
-            Self::Liben =>     ("Liben",     Some(700), CardCost::new(Same, 0, 0)),
-            Self::Ellin =>     ("Ellin",     Some(700), CardCost::new(Same, 2, 0)),
-            Self::LiuSu =>     ("LiuSu",     Some(700), CardCost::new(Same, 1, 0)),
-            Self::ChangTheNinth =>  ("ChangTheNinth",  Some(700), CardCost::new(Same, 0, 0)),
-            Self::IronTongueTian => ("IronTongueTian", Some(700), CardCost::new(Any,  2, 0)),
+            Self::Paimon =>    ("Paimon",    None,      CardCost::MATCH3),
+            Self::Katheryne => ("Katheryne", Some(700), CardCost::ANY2),
+            Self::Timaeus =>   ("Timaeus",   Some(700), CardCost::MATCH2),
+            Self::Wagner =>    ("Wagner",    Some(700), CardCost::MATCH2),
+            Self::ChefMao =>   ("Chef Mao",  Some(700), CardCost::ONE),
+            Self::Tubby =>     ("Tubby",     Some(700), CardCost::MATCH2),
+            Self::Timmie =>    ("Timmie",    Some(700), CardCost::ZERO),
+            Self::Liben =>     ("Liben",     Some(700), CardCost::ZERO),
+            Self::Ellin =>     ("Ellin",     Some(700), CardCost::MATCH2),
+            Self::LiuSu =>     ("Liu Su",    Some(700), CardCost::ONE),
+            Self::ChangTheNinth =>  ("Chang the Ninth",  Some(700), CardCost::ZERO),
+            Self::IronTongueTian => ("Iron Tongue Tian", Some(700), CardCost::ANY2),
         }
     }
 }
@@ -55,3 +61,5 @@ impl super::CardOrd for CompanionCard {
         (*self as u32).cmp(&(*other as u32))
     }
 }
+
+impl_from!(Companion: CompanionCard => crate::SupportCard => crate::ActionCard => crate::Card);

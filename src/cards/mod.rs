@@ -35,4 +35,3 @@ impl Card {
 pub(crate) trait CardOrd {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering;
 }
-

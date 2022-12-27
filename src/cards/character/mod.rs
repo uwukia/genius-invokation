@@ -1,4 +1,4 @@
-use crate::Element::{self, *};
+use crate::{Card, Element::{self, *}};
 
 pub use weapon::WeaponType;
 mod weapon;
@@ -86,11 +86,17 @@ impl CharacterCard {
             Self::Yoimiya =>       ("Yoimiya",        Pyro,    Some(Bow),      Inazuma),
             Self::MirrorMaiden =>          ("Mirror Maiden",          Hydro,  None, Fatui),
             Self::RhodeiaOfLoch =>         ("Rhodeia of Loch",        Hydro,  None, Monster),
-            Self::StonehideLawachurl =>    ("Stonehide Lawachurl",    Geo,    None,         Monster),
-            Self::JadeplumeTerrorshroom => ("Jadeplume Terrorshroom", Dendro, None,         Monster),
+            Self::StonehideLawachurl =>    ("Stonehide Lawachurl",    Geo,    None, Monster),
+            Self::JadeplumeTerrorshroom => ("Jadeplume Terrorshroom", Dendro, None, Monster),
             Self::MaguuKenki =>            ("Maguu Kenki",            Anemo,  None, Monster),
             Self::FatuiPyroAgent =>        ("Fatui Pyro Agent",       Pyro,   None, Fatui),
         }
+    }
+}
+
+impl From<CharacterCard> for Card {
+    fn from(card: CharacterCard) -> Card {
+        Card::Character(card)
     }
 }
 
